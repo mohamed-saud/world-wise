@@ -1,4 +1,7 @@
+import { useContext } from "react";
 import styles from "./User.module.css";
+import { AuthContext } from "../contexts/authContext";
+import { useNavigate } from "react-router-dom";
 
 const FAKE_USER = {
   name: "Jack",
@@ -8,10 +11,15 @@ const FAKE_USER = {
 };
 
 function User() {
+  const { logOut, isAuthantcated } = useContext(AuthContext);
+  const navegate = useNavigate();
   const user = FAKE_USER;
 
-  function handleClick() {}
-
+  function handleClick() {
+    navegate("/login");
+    logOut();
+  }
+  if (!isAuthantcated) return;
   return (
     <div className={styles.user}>
       <img src={user.avatar} alt={user.name} />

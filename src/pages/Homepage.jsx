@@ -1,7 +1,10 @@
+import { useContext } from "react";
 import PageNav from "../components/PageNav";
 import styles from "./Homepage.module.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../contexts/authContext";
 export default function Homepage() {
+  const { isAuthantcated } = useContext(AuthContext);
   return (
     <main className={styles.homepage}>
       <PageNav />
@@ -16,9 +19,15 @@ export default function Homepage() {
           of. Never forget your wonderful experiences, and show your friends how
           you have wandered the world.
         </h2>
-        <Link to="/app" className="cta">
-          Start traking now
-        </Link>
+        {isAuthantcated ? (
+          <Link to="/app" className="cta">
+            Start traking now
+          </Link>
+        ) : (
+          <Link to="/login" className="cta">
+            Start traking now
+          </Link>
+        )}
       </section>
     </main>
   );

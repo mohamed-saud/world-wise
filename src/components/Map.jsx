@@ -14,9 +14,12 @@ import { useCities } from "../contexts/CitiesContext";
 import Button from "./Button";
 import { useGeolocation } from "../hooks/useGeolocations";
 import { useUrlPosition } from "../hooks/useUrlPosition";
+import User from "./User";
 function Map() {
   const [mapPosition, setMapPosition] = useState([51.505, -0.09]);
+
   const { cities } = useCities();
+
   const { mapLat, mapLng } = useUrlPosition();
   const {
     getGeoLocationPosition,
@@ -42,19 +45,31 @@ function Map() {
     },
     [positonGeolocation]
   );
+
+  function getUorCurntPosion() {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    function success(pos) {
+      const crd = pos.coords;
+      navigate(`form?lat=${crd.latitude}&lng=${crd.longitude}`);
+      getGeoLocationPosition();
+    }
+    function error(err) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }
   return (
     <div className={styles.mapContainer}>
       {!positonGeolocation ? (
-        <Button
-          type="position"
-          onclick={() => {
-            navigate("form");
-            getGeoLocationPosition();
-          }}
-        >
+        <Button type="position" onclick={getUorCurntPosion}>
           {isLoading ? "Loading..." : "use your position"}
         </Button>
       ) : null}
+
       <MapContainer
         center={mapPosition}
         zoom={6}
@@ -77,6 +92,7 @@ function Map() {
         <ChangeCenterMap position={mapPosition} />
         <LocationMarker />
       </MapContainer>
+      <User />
     </div>
   );
 }
